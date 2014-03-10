@@ -41,6 +41,7 @@ csstidy::csstidy()
 	settings["sort_selectors"] = 0;
 	settings["merge_selectors"] = 2;
 	settings["discard_invalid_properties"] = 0;
+	settings["discard_nonstandard_properties"] = 0;
 	settings["allow_html_in_templates"] = 0;
 	settings["silent"] = 0;
 	settings["preserve_css"] = 0;

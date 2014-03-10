@@ -21,7 +21,7 @@
 
 map<string,bool> settings;
 map< string, vector<string> > shorthands;
-map<string,string> background_prop_default,replace_colors,all_properties;
+map<string,string> background_prop_default,replace_colors,all_properties,nonstandard_properties;
 vector<string> unit_values,color_values;
 map<string,parse_status> at_rules;
 
@@ -359,6 +359,15 @@ void prepare()
 	all_properties["richness"] = "CSS2.0,CSS2.1,CSS3.0";
 	all_properties["speak-punctuation"] = "CSS2.0,CSS2.1,CSS3.0";
 	all_properties["speak-numeral"] = "CSS2.0,CSS2.1,CSS3.0";
+
+        nonstandard_properties["-moz-user-select"] = "MOZILLA";
+        nonstandard_properties["-khtml-user-select"] = "KHTML";
+        nonstandard_properties["-ms-user-select"] = "MICROSOFT";
+        nonstandard_properties["-webkit-user-select"] = "WEBKIT";
+        nonstandard_properties["-moz-border-radius"] = "MOZILLA";
+        nonstandard_properties["-webkit-border-radius"] = "WEBKIT";
+        nonstandard_properties["-moz-box-shadow"] = "MOZILLA";
+        nonstandard_properties["-webkit-box-shadow"] = "WEBKIT";
 
 	background_prop_default["background-image"] = "none";
 	background_prop_default["background-size"] = "auto";
