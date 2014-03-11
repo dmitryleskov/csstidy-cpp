@@ -24,6 +24,7 @@
 #include <map>
 #include <algorithm>
 #include <iterator>
+#include <stdexcept>
 using namespace std;
 
 
@@ -116,12 +117,13 @@ class umap
 			return mIt->second;
 		}
 
-		valT& at(int index)
+		valT& at(int index) throw(std::out_of_range)
 		{
 			if(index < size() && index >= 0)
 			{
 				return sortv[index]->second;
 			}
+			throw std::out_of_range("index is out of bounds");
 		} 
 		
 		// Iterator
