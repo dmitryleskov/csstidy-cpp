@@ -27,7 +27,7 @@ bool escaped(const string &istring, const int pos)
 // Save replacement for .at()
 char s_at(const string &istring, const int pos)
 {
-	if(pos > (istring.length()-1) && pos < 0)
+	if((unsigned int)pos > (istring.length()-1) && pos < 0)
 	{
 		return 0;
 	}
@@ -63,7 +63,7 @@ vector<string> explode(const string e,string s, const bool check)
 string implode(const string e,const vector<string> s)
 {
 	string ret;
-	for(int i = 0; i < s.size(); i++)
+	for(unsigned int i = 0; i < s.size(); i++)
 	{
 		ret += s[i];
 		if(i != (s.size()-1)) ret += e;
@@ -74,7 +74,7 @@ string implode(const string e,const vector<string> s)
 string build_value(const vector<string> subvalues)
 {
 	string ret;
-	for(int i = 0; i < subvalues.size(); i++)
+	for(unsigned int i = 0; i < subvalues.size(); i++)
 	{
 		ret += subvalues[i];
 		if(i != (subvalues.size()-1))
@@ -112,7 +112,7 @@ string str_replace(const string find, const string replace, string str)
 {
     int len = find.length();
     int replace_len = replace.length();
-    int pos = str.find(find);
+    size_t pos = str.find(find);
 
     while(pos != string::npos)
 	{  
@@ -126,12 +126,12 @@ string str_replace(const vector<string>& find, const string replace, string str)
 {
 	int replace_len = replace.length();
 	
-	for(int i = 0; i < find.size(); ++i)
+	for(int i = 0; (unsigned int)i < find.size(); ++i)
 	{
 	    int len = find[i].length();
 	    int pos = str.find(find[i]);
 	
-	    while(pos != string::npos)
+	    while((unsigned int)pos != string::npos)
 		{  
 	        str.replace(pos, len, replace);
 	        pos = str.find(find[i], pos + replace_len);
@@ -143,7 +143,7 @@ string str_replace(const vector<string>& find, const string replace, string str)
 
 bool in_char_arr(const char* haystack, const char needle)
 {
-	for(int i = 0; i < strlen(haystack); ++i)
+	for(unsigned int i = 0; i < strlen(haystack); ++i)
 	{
 		if(haystack[i] == needle)
 		{
@@ -160,7 +160,7 @@ bool in_str_array(const string& haystack, const char needle)
 
 bool in_str_array(const vector<string>& haystack, const string needle)
 {
-	for(int i = 0; i < haystack.size(); ++i)
+	for(unsigned int i = 0; i < haystack.size(); ++i)
 	{
 		if(haystack[i] == needle)
 		{
@@ -223,7 +223,7 @@ vector<string> unserialise_sa(const string istring)
 		next_length += strpos;
 
 		string string_tmp = "";
-		for(int i = strpos; (i<istring.length() && i < next_length); i++)
+		for(int i = strpos; ((unsigned int)i<istring.length() && i < next_length); i++)
 		{
 			string_tmp += istring[i];
 			--strlen; ++strpos;

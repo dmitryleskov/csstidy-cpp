@@ -92,10 +92,9 @@ string compress_numbers(string subvalue, string property, string function)
 		temp.push_back(subvalue);
 	}
 		
-	for (int i = 0; i < temp.size(); ++i)
+	for (unsigned int i = 0; i < temp.size(); ++i)
 	{
-		if(!(temp[i].length() > 0 && (ctype_digit(temp[i][0])) ||
-		     temp[i].length() > 1 && (ctype_digit(temp[i][1])) && (temp[i][0] == '+' || temp[i][0] == '-' )))
+		if(!(((temp[i].length() > 0 && (ctype_digit(temp[i][0]))) || (temp[i].length() > 1 && (ctype_digit(temp[i][1])))) && (temp[i][0] == '+' || temp[i][0] == '-' )))
 		{
 			// As temp[i] does not begin with a digit
 			// (optionally preceded by a plus or minus sign), make no changes to it.
@@ -153,7 +152,7 @@ bool property_is_next(string istring, int pos)
 {
 	istring = istring.substr(pos,istring.length()-pos);
 	pos = istring.find_first_of(':',0);
-	if(pos == string::npos)
+	if((unsigned int)pos == string::npos)
 	{
 		return false;
 	}
@@ -167,7 +166,7 @@ string cut_color(string color)
 	{
 		vector<string> color_tmp = explode(",",color.substr(4,color.length()-5));
 
-		for (int i = 0; i < color_tmp.size(); ++i)
+		for (int i = 0; (unsigned int)i < color_tmp.size(); ++i)
 		{
 			color_tmp[i] = trim(color_tmp[i]);
 			if(color_tmp[i].at(color_tmp[i].length()-1) == '%')
@@ -178,7 +177,7 @@ string cut_color(string color)
 		}
 		
 		color = "#";
-		for (int i = 0; i < color_tmp.size(); ++i)
+		for (int i = 0; (unsigned int)i < color_tmp.size(); ++i)
 		{
 			if(atoi(color_tmp[i].c_str()) < 16)
 			{
@@ -278,7 +277,7 @@ void merge_selectors(sstore& input)
 		{
 			newsel = i->first;
 
-			for(int k = 0; k < keys.size(); ++k)
+			for(int k = 0; (unsigned int)k < keys.size(); ++k)
 			{
 				input.erase(keys[k]);
 				newsel += "," + keys[k];
