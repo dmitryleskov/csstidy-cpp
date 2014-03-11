@@ -537,11 +537,11 @@ void csstidy::parse_css(string css_input)
 					// and the current property is not 'content', it may be safe to remove quotes.
 					// TODO: Are there any properties other than 'content' where this is unsafe?
 					// TODO: What if the string contains a comma or slash, and the property is a list or shorthand?
-					if (str_char == '"' || str_char == '\'') {
+					if ((str_char == '"' || str_char == '\'') && cur_property != "font-family") {
 						// If the string is in double or single quotes, remove them
 						// FIXME: once url() is handled separately, this may always be the case.
 						cur_string = cur_string.substr(1, cur_string.length() - 2);
-					} else if (cur_string.length() > 3 && (cur_string[1] == '"' || cur_string[1] == '\'') && cur_sub_value != "url") /* () */ {
+					} else if (cur_string.length() > 3 && (cur_string[1] == '"' || cur_string[1] == '\'')) /* () */ {
 						cur_string = cur_string[0] + cur_string.substr(2, cur_string.length() - 4) + cur_string[cur_string.length()-1];
 					}
 				}
