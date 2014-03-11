@@ -44,6 +44,7 @@ csstidy::csstidy()
 	settings["discard_invalid_properties"] = 0;
 	settings["discard_nonstandard_properties"] = 0;
 	settings["allow_html_in_templates"] = 0;
+        settings["allow_duplicate_properties"] = 0;
 	settings["silent"] = 0;
 	settings["preserve_css"] = 0;
 	settings["timestamp"] = 0;
@@ -86,22 +87,43 @@ void csstidy::copy(const string media, const string selector, const string media
 
 void csstidy::add(const string& media, const string& selector, const string& property, const string& value)
 {
-	if(settings["preserve_css"]) {
+
+        string temp_property = property;
+        bool found = false;
+        int count = 0;
+        stringstream tempstream;
+
+	if(settings["preserve_css"])
+        {
 		return;
 	}
 	
-	if(css[media][selector].has(property))
-	{
-		if( !is_important(css[media][selector][property]) || (is_important(css[media][selector][property]) && is_important(value)) )
+        while( found == false ) {
+	        if(css[media][selector].has(temp_property))
+	        {
+                        if( settings["allow_duplicate_properties"] )
+                        {
+                              temp_property = property;
+                              temp_property.append("_");
+                              tempstream << count;
+                              temp_property.append(tempstream.str());
+                        }
+
+		        if( !is_important(css[media][selector][temp_property]) || (is_important(css[media][selector][temp_property]) && is_important(value)) )
+		        {
+			      css[media][selector].erase(temp_property);
+			      css[media][selector][temp_property] = trim(value);
+                        }
+
+                        found = true;
+	        }
+	        else
 		{
-			css[media][selector].erase(property);
-			css[media][selector][property] = trim(value);
+			css[media][selector][temp_property] = trim(value);
+		        found = true;
 		}
-	}
-	else
-	{
-		css[media][selector][property] = trim(value);
-	}
+        }
+
 }
 
 void csstidy::log(const string msg, const message_type type, int iline)

@@ -434,6 +434,7 @@ void csstidy::parse_css(string css_input)
 					}
 
 					bool valid = (all_properties.count(cur_property) > 0 && all_properties[cur_property].find(css_level,0) != string::npos);
+
 					if((!invalid_at || settings["preserve_css"]) && (!settings["discard_invalid_properties"] || valid))
 					{
 						add(cur_at,cur_selector,cur_property,cur_value);
@@ -540,7 +541,7 @@ void csstidy::parse_css(string css_input)
 						// If the string is in double or single quotes, remove them
 						// FIXME: once url() is handled separately, this may always be the case.
 						cur_string = cur_string.substr(1, cur_string.length() - 2);
-					} else if (cur_string.length() > 3 && (cur_string[1] == '"' || cur_string[1] == '\'')) /* () */ {
+					} else if (cur_string.length() > 3 && (cur_string[1] == '"' || cur_string[1] == '\'') && cur_sub_value != "url") /* () */ {
 						cur_string = cur_string[0] + cur_string.substr(2, cur_string.length() - 4) + cur_string[cur_string.length()-1];
 					}
 				}

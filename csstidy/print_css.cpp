@@ -47,7 +47,15 @@ void csstidy::_convert_raw_css()
 
             for(umap<string,string>::iterator k = j->second.begin(); k != j->second.end(); ++k)
             {
-                add_token(PROPERTY, k->first, true);
+                string temp_property = k->first;
+                size_t location = temp_property.find('_');
+                
+                if( location != string::npos )
+                {
+                    temp_property = temp_property.erase(location); 
+                }
+
+                add_token(PROPERTY, temp_property, true);
                 add_token(VALUE, k->second, true);
             }
 
@@ -58,6 +66,7 @@ void csstidy::_convert_raw_css()
             add_token(AT_END, i->first, true);
         }
     }
+
 }
 
 int csstidy::_seeknocomment(const int key, int move)
