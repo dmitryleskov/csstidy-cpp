@@ -173,7 +173,7 @@ string cut_color(string color)
 			{
 				color_tmp[i] = f2str(round(255 * atoi(color_tmp[i].c_str())/100,0));
 			}
-			if(atoi(color_tmp[i].c_str()) > 255) color_tmp[i] = 255;
+			if(atoi(color_tmp[i].c_str()) > 255) color_tmp[i] = (char)255;
 		}
 		
 		color = "#";
