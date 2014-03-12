@@ -28,20 +28,23 @@ csstidy::csstidy()
 	namesp = "";
 	line = 1;
 	tokens = "{};:()@='\"/,\\!$%&*+.<>?[]^`|~";
-	css_level = "CSS2.1";
+	css_level = "CSS3.0";
 	
 	settings["remove_bslash"] = 1;
 	settings["compress_colors"] = 1;
 	settings["compress_font-weight"] = 1;
 	settings["lowercase_s"] = 0;
 	settings["optimise_shorthands"] = 1;
+	settings["optimise_numbers"] = 0;
 	settings["remove_last_;"] = 0;
 	settings["case_properties"] = 0;
 	settings["sort_properties"] = 0;
 	settings["sort_selectors"] = 0;
 	settings["merge_selectors"] = 2;
 	settings["discard_invalid_properties"] = 0;
+	settings["discard_nonstandard_properties"] = 0;
 	settings["allow_html_in_templates"] = 0;
+        settings["allow_duplicate_properties"] = 0;
 	settings["silent"] = 0;
 	settings["preserve_css"] = 0;
 	settings["timestamp"] = 0;
@@ -84,22 +87,43 @@ void csstidy::copy(const string media, const string selector, const string media
 
 void csstidy::add(const string& media, const string& selector, const string& property, const string& value)
 {
-	if(settings["preserve_css"]) {
+
+        string temp_property = property;
+        bool found = false;
+        int count = 0;
+        stringstream tempstream;
+
+	if(settings["preserve_css"])
+        {
 		return;
 	}
 	
-	if(css[media][selector].has(property))
-	{
-		if( !is_important(css[media][selector][property]) || (is_important(css[media][selector][property]) && is_important(value)) )
+        while( found == false ) {
+	        if(css[media][selector].has(temp_property))
+	        {
+                        if( settings["allow_duplicate_properties"] )
+                        {
+                              temp_property = property;
+                              temp_property.append("_");
+                              tempstream << count;
+                              temp_property.append(tempstream.str());
+                        }
+
+		        if( !is_important(css[media][selector][temp_property]) || (is_important(css[media][selector][temp_property]) && is_important(value)) )
+		        {
+			      css[media][selector].erase(temp_property);
+			      css[media][selector][temp_property] = trim(value);
+                        }
+
+                        found = true;
+	        }
+	        else
 		{
-			css[media][selector].erase(property);
-			css[media][selector][property] = trim(value);
+			css[media][selector][temp_property] = trim(value);
+		        found = true;
 		}
-	}
-	else
-	{
-		css[media][selector][property] = trim(value);
-	}
+        }
+
 }
 
 void csstidy::log(const string msg, const message_type type, int iline)
@@ -113,7 +137,7 @@ void csstidy::log(const string msg, const message_type type, int iline)
 	}
 	if(logs.count(line) > 0)
 	{
-		for(int i = 0; i < logs[line].size(); ++i)
+		for(int i = 0; (unsigned int)i < logs[line].size(); ++i)
 		{
 			if(logs[line][i].m == new_msg.m && logs[line][i].t == new_msg.t)
 			{
@@ -130,7 +154,7 @@ string csstidy::unicode(string& istring,int& i)
 	string add = "";
 	bool replaced = false;
 	
-	while(i < istring.length() && (ctype_xdigit(istring[i]) || ctype_space(istring[i])) && add.length()< 6)
+	while((unsigned int)i < istring.length() && (ctype_xdigit(istring[i]) || ctype_space(istring[i])) && add.length()< 6)
 	{
 		add += istring[i];
 
@@ -141,7 +165,7 @@ string csstidy::unicode(string& istring,int& i)
 		i++;
 	}
 
-	if(hexdec(add) > 47 && hexdec(add) < 58 || hexdec(add) > 64 && hexdec(add) < 91 || hexdec(add) > 96 && hexdec(add) < 123)
+	if((hexdec(add) > 47 && hexdec(add) < 58) || (hexdec(add) > 64 && hexdec(add) < 91) || (hexdec(add) > 96 && hexdec(add) < 123))
 	{
 		string msg = "Replaced unicode notation: Changed \\" + rtrim(add) + " to ";
 		add = static_cast<int>(hexdec(add));
@@ -154,7 +178,7 @@ string csstidy::unicode(string& istring,int& i)
 		add = trim("\\" + add);
 	}
 
-	if(ctype_xdigit(istring[i+1]) && ctype_space(istring[i]) && !replaced || !ctype_space(istring[i]))
+	if((ctype_xdigit(istring[i+1]) && ctype_space(istring[i]) && !replaced) || !ctype_space(istring[i]))
 	{
 		i--;
 	}
@@ -264,7 +288,7 @@ void csstidy::explode_selectors()
         int lastpos = 0;
         sel_separate.push_back(cur_selector.length());
         
-        for (int i = 0; i < sel_separate.size(); ++i)
+        for (unsigned int i = 0; i < sel_separate.size(); ++i)
         {
             if (i == sel_separate.size()-1) {
                 sel_separate[i] += 1;
@@ -276,7 +300,7 @@ void csstidy::explode_selectors()
  
         if (new_sels.size() > 1)
         {
-            for (int i = 0; i < new_sels.size(); ++i)
+            for (int i = 0; (unsigned int)i < new_sels.size(); ++i)
             {
 				for (pstore::iterator j = css[cur_at][cur_selector].begin(); j != css[cur_at][cur_selector].end(); ++j)
 				{

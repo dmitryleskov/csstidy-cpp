@@ -29,7 +29,7 @@ using namespace std;
  * at = in @-block
  */
 
-extern map<string,string> all_properties,replace_colors;
+extern map<string,string> all_properties,replace_colors,nonstandard_properties;
 extern map< string, vector<string> > shorthands;
 extern map<string,parse_status> at_rules;
 
@@ -38,7 +38,7 @@ void csstidy::parse_css(string css_input)
 	input_size = css_input.length();
 	css_input = str_replace("\r\n","\n",css_input); // Replace all double-newlines
 	css_input += "\n";
-	parse_status status = is, from;
+	parse_status status = is, from = is;
 	cur_property = "";
 	cur_function = "";
 
@@ -46,7 +46,7 @@ void csstidy::parse_css(string css_input)
 
 	vector<string> cur_sub_value_arr;
 	vector<string> cur_function_arr; // Stack of nested function calls
-	char str_char;
+	char str_char = 0x00;
 	bool str_in_str = false;
 	bool invalid_at = false;
 	bool pn = false;
@@ -97,7 +97,7 @@ void csstidy::parse_css(string css_input)
 			{
 				// Skip excess whitespace
 				int lastpos = cur_at.length()-1;
-				if(lastpos == -1 || !( (ctype_space(cur_at[lastpos]) || is_token(cur_at,lastpos) && cur_at[lastpos] == ',') && ctype_space(css_input[i])))
+				if(lastpos == -1 || !( ((ctype_space(cur_at[lastpos]) || is_token(cur_at,lastpos)) && cur_at[lastpos] == ',') && ctype_space(css_input[i])))
 				{
 					cur_at += css_input[i];
 				}
@@ -185,7 +185,7 @@ void csstidy::parse_css(string css_input)
 			else
 			{
 				int lastpos = cur_selector.length()-1;
-				if(!( (ctype_space(cur_selector[lastpos]) || is_token(cur_selector,lastpos) && cur_selector[lastpos] == ',') && ctype_space(css_input[i])))
+				if(!( ((ctype_space(cur_selector[lastpos]) || is_token(cur_selector,lastpos)) && cur_selector[lastpos] == ',') && ctype_space(css_input[i])))
 				{
 					cur_selector += css_input[i];
 				}
@@ -196,7 +196,7 @@ void csstidy::parse_css(string css_input)
 			case ip:
 			if(is_token(css_input,i))
 			{
-				if(css_input[i] == ':' || css_input[i] == '=' && cur_property != "") // IE really accepts =, so csstidy will fix those mistakes
+				if((css_input[i] == ':' || css_input[i] == '=') && cur_property != "") // IE really accepts =, so csstidy will fix those mistakes
 				{
 					status = iv;
 					bool valid = !settings["discard_invalid_properties"] ||
@@ -256,7 +256,7 @@ void csstidy::parse_css(string css_input)
 
 			/* Case in-value */
 			case iv:
-			pn = ((css_input[i] == '\n' || css_input[i] == '\r') && property_is_next(css_input,i+1) || i == str_size-1);
+			pn = (((css_input[i] == '\n' || css_input[i] == '\r') && property_is_next(css_input,i+1)) || i == str_size-1);
 			if(pn)
 			{
 				log("Added semicolon to the end of declaration",Warning);
@@ -434,6 +434,7 @@ void csstidy::parse_css(string css_input)
 					}
 
 					bool valid = (all_properties.count(cur_property) > 0 && all_properties[cur_property].find(css_level,0) != string::npos);
+
 					if((!invalid_at || settings["preserve_css"]) && (!settings["discard_invalid_properties"] || valid))
 					{
 						add(cur_at,cur_selector,cur_property,cur_value);
@@ -463,15 +464,20 @@ void csstidy::parse_css(string css_input)
 						}
 					}
 					if(!valid)
-					{
-						if(settings["discard_invalid_properties"])
-						{
-							log("Removed invalid property: " + cur_property,Warning);
-						}
-						else
-						{
-							log("Invalid property in " + strtoupper(css_level) + ": " + cur_property,Warning);
-						}
+                        		{
+                                                valid = (nonstandard_properties.count(cur_property) > 0);
+
+                                                if(!valid || settings["discard_nonstandard_properties"] )
+                                                {
+  						     if(settings["discard_invalid_properties"])
+						     {
+							  log("Removed invalid property: " + cur_property,Warning);
+						     }
+						     else
+						     {
+						   	  log("Invalid property in " + strtoupper(css_level) + ": " + cur_property,Warning);
+						     }
+                                                }
 					}
 
 					//Split multiple selectors here if necessary
@@ -531,7 +537,7 @@ void csstidy::parse_css(string css_input)
 					// and the current property is not 'content', it may be safe to remove quotes.
 					// TODO: Are there any properties other than 'content' where this is unsafe?
 					// TODO: What if the string contains a comma or slash, and the property is a list or shorthand?
-					if (str_char == '"' || str_char == '\'') {
+					if ((str_char == '"' || str_char == '\'') && cur_property != "font-family") {
 						// If the string is in double or single quotes, remove them
 						// FIXME: once url() is handled separately, this may always be the case.
 						cur_string = cur_string.substr(1, cur_string.length() - 2);
@@ -602,7 +608,7 @@ string csstidy::optimise_subvalue(string subvalue, const string property, const 
 	subvalue = trim(subvalue);
 
 	string temp = compress_numbers(subvalue,property,function);
-	if(temp != subvalue)
+	if(temp != subvalue && settings["optimise_numbers"])
 	{
 		if(temp.length() > subvalue.length())
 		{
