@@ -13,7 +13,7 @@ if not (mymode in ['debug', 'release']):
 print '**** Compiling in ' + mymode + ' mode...'
 
 debugcflags = ['-Wall', '-g', '-pedantic']   #extra compile flags for debug
-releasecflags = ['-O2']         #extra compile flags for release
+releasecflags = ['-O2', '-Wall', '-pedantic', '-g']         #extra compile flags for release
 
 env = Environment()
 
