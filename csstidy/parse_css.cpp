@@ -29,7 +29,7 @@ using namespace std;
  * at = in @-block
  */
 
-extern map<string,string> all_properties,replace_colors;
+extern map<string,string> all_properties,replace_colors,nonstandard_properties;
 extern map< string, vector<string> > shorthands;
 extern map<string,parse_status> at_rules;
 
@@ -463,15 +463,20 @@ void csstidy::parse_css(string css_input)
 						}
 					}
 					if(!valid)
-					{
-						if(settings["discard_invalid_properties"])
-						{
-							log("Removed invalid property: " + cur_property,Warning);
-						}
-						else
-						{
-							log("Invalid property in " + strtoupper(css_level) + ": " + cur_property,Warning);
-						}
+                        		{
+                                                valid = (nonstandard_properties.count(cur_property) > 0);
+
+                                                if(!valid || settings["discard_nonstandard_properties"] )
+                                                {
+  						     if(settings["discard_invalid_properties"])
+						     {
+							  log("Removed invalid property: " + cur_property,Warning);
+						     }
+						     else
+						     {
+						   	  log("Invalid property in " + strtoupper(css_level) + ": " + cur_property,Warning);
+						     }
+                                                }
 					}
 
 					//Split multiple selectors here if necessary
