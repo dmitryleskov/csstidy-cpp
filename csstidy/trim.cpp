@@ -61,7 +61,7 @@ string strip_tags(string istring)
 	bool intag = false;
 	string new_string;
 		
-	for(int i = 0; i < istring.length(); i++)
+	for(unsigned int i = 0; i < istring.length(); i++)
 	{
 		if(istring[i] != '<' && !intag)
 		{

@@ -94,7 +94,7 @@ class umap
 				return false;
 			}
 					
-			for(int i = 0; i < sortv.size(); ++i)
+			for(int i = 0; (unsigned int)i < sortv.size(); ++i)
 			{
 				if(sortv[i]->first != comp.sortv[i]->first)
 				{
