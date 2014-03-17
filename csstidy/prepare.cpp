@@ -254,7 +254,9 @@ void prepare()
 	all_properties["border-left-width"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["border-bottom-width"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["border-collapse"] = "CSS2.0,CSS2.1,CSS3.0";
-	all_properties["border-spacing"] = "CSS2.0,CSS2.1,CSS3.0";
+	all_properties["border-spacing"] = "CSS3.0";
+	all_properties["border-radius"] = "CSS3.0";
+	all_properties["box-shadow"] = "CSS3.0";
 	all_properties["bottom"] = "CSS2.0,CSS2.1,CSS3.0";
 	all_properties["caption-side"] = "CSS2.0,CSS2.1,CSS3.0";
 	all_properties["content"] = "CSS2.0,CSS2.1,CSS3.0";
@@ -268,6 +270,9 @@ void prepare()
 	all_properties["display"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["direction"] = "CSS2.0,CSS2.1,CSS3.0";
 	all_properties["float"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
+	all_properties["zoom"] = "CSS3.0";
+	all_properties["opacity"] = "CSS3.0";
+        /* Font styles */
 	all_properties["font"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["font-family"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["font-style"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
@@ -278,6 +283,7 @@ void prepare()
 	all_properties["font-size"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["font-format"] = "CSS3.0";
 	all_properties["font-family"] = "CSS3.0";
+	all_properties["src"] = "CSS3.0";
 	all_properties["height"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["left"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["line-height"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
@@ -326,6 +332,7 @@ void prepare()
 	all_properties["word-spacing"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["text-transform"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["white-space"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
+        all_properties["text-shadow"] = "CSS3.0";
 	all_properties["unicode-bidi"] = "CSS2.0,CSS2.1,CSS3.0";
 	all_properties["vertical-align"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
 	all_properties["visibility"] = "CSS1.0,CSS2.0,CSS2.1,CSS3.0";
@@ -352,7 +359,6 @@ void prepare()
 	all_properties["richness"] = "CSS2.0,CSS2.1,CSS3.0";
 	all_properties["speak-punctuation"] = "CSS2.0,CSS2.1,CSS3.0";
 	all_properties["speak-numeral"] = "CSS2.0,CSS2.1,CSS3.0";
-	all_properties["src"] = "CSS3.0";
 
 	background_prop_default["background-image"] = "none";
 	background_prop_default["background-size"] = "auto";
