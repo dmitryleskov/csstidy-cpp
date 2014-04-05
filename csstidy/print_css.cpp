@@ -64,7 +64,7 @@ int csstidy::_seeknocomment(const int key, int move)
 {
     int go = (move > 0) ? 1 : -1;
     for (int i = key + 1; abs(key-i)-1 < abs(move); i += go) {
-        if (i < 0 || i > csstokens.size()) {
+        if (i < 0 || (unsigned int)i > csstokens.size()) {
             return -1;
         }
         if (csstokens[i].type == COMMENT) {
@@ -73,6 +73,7 @@ int csstidy::_seeknocomment(const int key, int move)
         }
         return csstokens[i].type;
     }
+    return -1;
 }
 
 void csstidy::print_css(string filename)
@@ -99,7 +100,7 @@ void csstidy::print_css(string filename)
 
 	if(!settings["allow_html_in_templates"])
 	{
-		for(int i = 0; i < csstemplate.size(); ++i)
+		for(unsigned int i = 0; i < csstemplate.size(); ++i)
 		{
 			csstemplate[i] = strip_tags(csstemplate[i]);
 		}
@@ -125,7 +126,7 @@ void csstidy::print_css(string filename)
 
 	if(import.size() > 0)
 	{
-		for(int i = 0; i < import.size(); i ++)
+		for(unsigned int i = 0; i < import.size(); i ++)
 		{
 			output  << csstemplate[0] << "@import " << csstemplate[5] << import[i] << csstemplate[6];
 		}
@@ -141,7 +142,7 @@ void csstidy::print_css(string filename)
 
     bool plain = !settings["allow_html_in_templates"];
 
-    for (int i = 0; i < csstokens.size(); ++i)
+    for (unsigned int i = 0; i < csstokens.size(); ++i)
     {
         switch (csstokens[i].type)
         {
@@ -214,7 +215,7 @@ void csstidy::print_css(string filename)
 		cout << "-----------------------------------\n\n";
 		for(map<int, vector<message> >::iterator j = logs.begin(); j != logs.end(); j++ )
 		{
-			for(int i = 0; i < j->second.size(); ++i)
+			for(unsigned int i = 0; i < j->second.size(); ++i)
 			{
 				cout << j->first << ": " << j->second[i].m << "\n" ;
 			}

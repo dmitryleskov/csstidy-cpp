@@ -51,14 +51,14 @@ map<string,string> dissolve_short_bg(string istring)
 	}
 	
 	str_values = explode_ws(',',istring);
-	for(int i = 0; i < str_values.size(); i++)
+	for(unsigned int i = 0; i < str_values.size(); i++)
 	{
 		have["clip"] = false; have["pos"] = false;
 		have["color"] = false; have["bg"] = false;
 		
 		vector<string> temp_values = explode_ws(' ',trim(str_values[i]));
 	
-		for(int j = 0; j < temp_values.size(); j++)
+		for(unsigned int j = 0; j < temp_values.size(); j++)
 		{
 			if(have["bg"] == false && ((temp_values[j]).substr(0,4) == "url(" || temp_values[j] == "none"))
 			{
@@ -128,7 +128,7 @@ vector<string> explode_ws(char sep,string istring)
 {
 	// 1 = st // 2 = str
 	int status = 1;
-	char to;
+	char to = 0x00;
 	
 	vector<string> output;
 	output.push_back("");
@@ -144,7 +144,7 @@ vector<string> explode_ws(char sep,string istring)
 				++num;
 				output.push_back("");
 			}
-			else if(istring[i] == '"' || istring[i] == '\'' || istring[i] == '(' && !escaped(istring,i))
+			else if((istring[i] == '"' || istring[i] == '\'' || istring[i] == '(') && !escaped(istring,i))
 			{
 				status = 2;
 				to = (istring[i] == '(') ? ')' : istring[i];
@@ -190,7 +190,7 @@ void merge_bg(umap<string,string>& css_input)
 			string cur_value = css_input[it->first];
 			
 			// Skip some properties if there is no background image
-			if((bg_img_array.size() <= i || bg_img_array[i] == "none")
+			if((bg_img_array.size() <= (unsigned int)i || bg_img_array[i] == "none")
 				&& (it->first == "background-size" || it->first == "background-position"
 				|| it->first == "background-attachment" || it->first == "background-repeat"))
 			{
@@ -212,7 +212,7 @@ void merge_bg(umap<string,string>& css_input)
 			
 			vector<string> temp = explode_ws(',',cur_value);
 
-			if(temp.size() > i)
+			if(temp.size() > (unsigned int)i)
 			{					
 				if(it->first == "background-size")
 				{
